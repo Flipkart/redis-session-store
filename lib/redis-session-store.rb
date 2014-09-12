@@ -8,7 +8,7 @@ class RedisSessionStore < ActionDispatch::Session::AbstractStore
   
   include RedisSessionHelpers
 
-  VERSION = '0.8.0'
+  VERSION = '0.8.0.patched'
   # Rails 3.1 and beyond defines the constant elsewhere
   unless defined?(ENV_SESSION_OPTIONS_KEY)
     ENV_SESSION_OPTIONS_KEY = Rack::Session::Abstract::ENV_SESSION_OPTIONS_KEY
