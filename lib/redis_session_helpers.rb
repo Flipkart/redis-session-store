@@ -28,14 +28,16 @@ module RedisSessionHelpers
     serializer.load(data)
   end
 
-  def save_by_session_id(sid, session_data, opt)
-    expiry = (options || env.fetch(ENV_SESSION_OPTIONS_KEY))[:expire_after]
-    if expiry
-      redis.setex(prefixed(sid), expiry, encode(session_data))
-    else
-      redis.set(prefixed(sid), encode(session_data))
-    end
-    return sid
+  def save_by_session_id(sid, session_data, options = nil)
+    save_with_expiry(sid, session_data, true, options || env.fetch(ENV_SESSION_OPTIONS_KEY))
+  end
+
+  def save_with_expiry(key, value, encrypt = false, options = nil)
+    expiry = (options || {})[:expire_after]
+    value = encrypt ? encode(value) : value
+    expiry ? redis.setex(prefixed(key), expiry, value) : redis.set(prefixed(key), value)
+
+    key
   end
 
   def encode(session_data)
